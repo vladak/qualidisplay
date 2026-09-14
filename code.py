@@ -6,6 +6,7 @@ import terminalio
 import traceback
 
 from logutil import get_log_level
+
 # from mqtt import mqtt_client_setup, mqtt_publish_robust
 from metrics import Metrics
 
@@ -131,10 +132,11 @@ def main():
         secrets.get(BROKER_PORT),
         secrets.get(METRIC_TIMEOUT),
         0.1,
-        [(secrets.get(MQTT_TEMP_TOPIC), secrets.get(MQTT_TEMP_NAME)),
-          (secrets.get(MQTT_CO2_TOPIC), secrets.get(MQTT_CO2_NAME)),
-          (secrets.get(MQTT_PRESSURE_TOPIC), secrets.get(MQTT_PRESSURE_NAME)),
-        ]
+        [
+            (secrets.get(MQTT_TEMP_TOPIC), secrets.get(MQTT_TEMP_NAME)),
+            (secrets.get(MQTT_CO2_TOPIC), secrets.get(MQTT_CO2_NAME)),
+            (secrets.get(MQTT_PRESSURE_TOPIC), secrets.get(MQTT_PRESSURE_NAME)),
+        ],
     )
 
     # By default the display will auto refresh.

@@ -81,7 +81,7 @@ class Metrics:
         #
         self.values = {}
         self.topic2names = {}
-        for (topic, value_name) in topic_n_name:
+        for topic, value_name in topic_n_name:
             if value_name is None:
                 raise ValueError(f"value name for topic {topic} is None")
             self.values[value_name] = (None, None)
@@ -125,10 +125,10 @@ class Metrics:
                 value = value_n_ts[0]
                 ts = value_n_ts[0]
                 # TODO
-                #if ts is not None and ts < time_threshold:
+                # if ts is not None and ts < time_threshold:
                 #    self.logger.warning(f"{name} last updated before time threshold")
                 #    self.values[name] = (None, None)
-                #else:
+                # else:
                 #    self.logger.debug(f"{name} = {value}")
 
         ret_dict = {name: value for name, (value, _) in self.values.items()}
