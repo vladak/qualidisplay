@@ -1,4 +1,3 @@
-import os
 import socketpool
 import supervisor
 import time
@@ -11,7 +10,6 @@ from logutil import get_log_level
 from metrics import Metrics
 
 import adafruit_logging as logging
-import adafruit_minimqtt.adafruit_minimqtt as MQTT
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
 
@@ -44,10 +42,6 @@ LOG_LEVEL = "log_level"
 
 TEMP_PREFIX = "Temp: "
 HUM_PREFIX = "Hum: "
-
-RED = (255, 0, 0)  # CO2 alert
-GREEN = (0, 255, 0)  # break alert
-BLUE = (0, 0, 255)  # table alert
 
 METRIC_TIMEOUT = "metric_timeout"
 MQTT_TEMP_TOPIC = "temp_sensor_topic"
@@ -137,12 +131,11 @@ def main():
         secrets.get(BROKER_PORT),
         secrets.get(METRIC_TIMEOUT),
         0.1,
-        [ (secrets.get(MQTT_TEMP_TOPIC), secrets.get(MQTT_TEMP_NAME)),
+        [(secrets.get(MQTT_TEMP_TOPIC), secrets.get(MQTT_TEMP_NAME)),
           (secrets.get(MQTT_CO2_TOPIC), secrets.get(MQTT_CO2_NAME)),
           (secrets.get(MQTT_PRESSURE_TOPIC), secrets.get(MQTT_PRESSURE_NAME)),
         ]
     )
-    data = ()
 
     # By default the display will auto refresh.
     graphics = Graphics(Displays.BAR320X820, default_bg=None, rotation=270)
