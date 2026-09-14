@@ -1,0 +1,45 @@
+name: Python checks
+
+on:
+  pull_request:
+  push:
+    paths:
+      - "*.py"
+      - .github/workflows/python-checks.yml
+      - pylintrc
+      - .isort.cfg
+
+jobs:
+  checks:
+    name: Python checks
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository and submodules
+        uses: actions/checkout@v6
+        with:
+          submodules: recursive
+      - uses: actions/setup-python@v6
+        with:
+          # Near enough to CircuitPython
+          python-version: "3.11"
+      - name: Install dependencies
+        run: |
+          python3 -m pip install --upgrade pip
+          python3 -m pip install -r requirements.txt
+          python3 -m pip install pytest
+      - name: Run flake8
+        run: |
+          python3 -m pip install flake8
+          flake8 --ignore=E501,W503 *.py
+      - name: Run pylint
+        run: |
+          python3 -m pip install pylint
+          pylint *.py
+      - name: Run black in check mode
+        run: |
+          python3 -m pip install black
+          black --check *.py
+      - name: Run isort in check mode
+        run: |
+          python3 -m pip install isort
+          isort *.py  --check --diff
