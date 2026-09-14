@@ -4,6 +4,9 @@
 
 ## Hardware
 
+- [Adafruit Qualia ESP32-S3 for TTL RGB-666 Displays](https://www.adafruit.com/product/5800)
+- [Rectangle RGB TTL TFT Display - 3.2" 320x820 No Touchscreen](https://www.adafruit.com/product/5828)
+
 ## Install
 
 With [`circup`](https://github.com/adafruit/circup/) installed and the Qualia connected over USB (assuming Linux distro):
