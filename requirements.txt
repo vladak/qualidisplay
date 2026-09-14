@@ -1,0 +1,6 @@
+adafruit-blinka
+adafruit-circuitpython-minimqtt
+adafruit-circuitpython-logging
+adafruit-circuitpython-display_text
+adafruit-circuitpython-ntp
+adafruit-circuitpython-debouncer
