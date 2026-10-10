@@ -174,13 +174,13 @@ def get_temp_color(value):
     Return color according to temperature value.
     """
     if value > 28:
-        return 0xe60000
+        return 0xE60000
     elif value > 12:
-        return 0xffcc00
+        return 0xFFCC00
     elif value < 0:
-        return 0x33cccc
+        return 0x33CCCC
     else:
-        return 0x33cc33
+        return 0x33CC33
 
 
 def main():
