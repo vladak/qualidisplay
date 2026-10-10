@@ -4,3 +4,4 @@ adafruit-circuitpython-logging
 adafruit-circuitpython-display_text
 adafruit-circuitpython-ntp
 adafruit-circuitpython-debouncer
+adafruit-circuitpython-qualia
