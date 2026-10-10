@@ -177,7 +177,7 @@ def get_temp_color(value):
         return 0xE60000
     elif value > 12:
         return 0xFFCC00
-    elif value < 0:
+    elif value <= 0:
         return 0x33CCCC
     else:
         return 0x33CC33
