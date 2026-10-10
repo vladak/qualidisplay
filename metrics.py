@@ -121,15 +121,16 @@ class Metrics:
         now = time.monotonic()
         if now > self.metric_timeout:
             time_threshold = now - self.metric_timeout
+            self.logger.debug(f"time threshold: {time_threshold}")
             for name, value_n_ts in self.values.items():
                 value = value_n_ts[0]
-                ts = value_n_ts[0]
-                # TODO
-                # if ts is not None and ts < time_threshold:
-                #    self.logger.warning(f"{name} last updated before time threshold")
-                #    self.values[name] = (None, None)
-                # else:
-                #    self.logger.debug(f"{name} = {value}")
+                ts = value_n_ts[1]
+                self.logger.debug(f"{name} last updated at {ts}")
+                if ts is not None and ts < time_threshold:
+                    self.logger.warning(f"{name} last updated before time threshold")
+                    self.values[name] = (None, None)
+                else:
+                    self.logger.debug(f"{name} = {value}")
 
         ret_dict = {name: value for name, (value, _) in self.values.items()}
         self.logger.debug(f"returning {ret_dict}")
