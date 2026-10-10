@@ -51,6 +51,7 @@ The font however has to be converted to fit onto the flash and then it has to be
 ## Guides
 
 - [font conversion](https://learn.adafruit.com/custom-fonts-for-pyportal-circuitpython-display/conversion)
+- [deep sleep](https://learn.adafruit.com/adafruit-qualia-esp32-s3-for-rgb666-displays/deep-sleep)
 
 ## Lessons learned
 
