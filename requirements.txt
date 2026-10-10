@@ -5,3 +5,4 @@ adafruit-circuitpython-display_text
 adafruit-circuitpython-ntp
 adafruit-circuitpython-debouncer
 adafruit-circuitpython-qualia
+adafruit-circuitpython-ntp

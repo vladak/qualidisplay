@@ -6,7 +6,11 @@ import time
 import traceback
 
 import adafruit_logging as logging
+import adafruit_ntp
+import alarm
+import board
 import displayio
+import dotclockframebuffer
 import socketpool
 import supervisor
 import terminalio
@@ -18,6 +22,7 @@ from logutil import get_log_level
 
 # from mqtt import mqtt_client_setup, mqtt_publish_robust
 from metrics import Metrics
+from timeutil import get_time
 
 try:
     import wifi
@@ -59,6 +64,11 @@ CO2_THRESHOLD = "co2_threshold"
 
 TEMP_FONT_FILE = "temp_font_file"
 CO2_FONT_FILE = "co2_font_file"
+
+NTP_SERVER = "ntp_server"
+TZ_OFFSET = "tz_offset"
+START_HR = "start_hr"
+END_HR = "end_hr"
 
 MANDATORY_SECRETS = [
     BROKER_HOSTNAME,
@@ -114,6 +124,51 @@ def hard_reset(exception):
     microcontroller.reset()  # pylint: disable=no-member
 
 
+def deep_sleep(graphics, sleep_period):
+    """
+    Enter deep sleep, powering the display off in the process.
+    """
+    logger = logging.getLogger(__name__)
+
+    i2c = graphics.i2c_bus
+
+    # Step 1: Send ST7701S Sleep In command
+    sleep_in = bytes([0x01, 0x10])
+    dotclockframebuffer.ioexpander_send_init_sequence(
+        i2c, sleep_in, **dict(board.TFT_IO_EXPANDER)
+    )
+
+    # Step 2: Release all display resources (stops dotclock signals)
+    displayio.release_displays()
+
+    # Step 3: Reconfigure backlight pin as OUTPUT on TCA9534, then drive all outputs LOW
+    while not i2c.try_lock():
+        pass
+    buf = bytearray(1)
+    i2c.writeto_then_readfrom(0x3F, bytes([0x03]), buf)
+    i2c.writeto(0x3F, bytes([0x03, buf[0] & ~(1 << board.BACKLIGHT)]))
+    i2c.writeto(0x3F, bytes([0x01, 0x00]))
+    i2c.unlock()
+
+    # Small delay to let panel settle
+    time.sleep(0.05)
+
+    #
+    # time.monotonic() will start losing precision rather quickly,
+    # however for the deep sleep this is not a problem because the internal
+    # clock gets reset on deep sleep.
+    #
+    now = time.monotonic()
+    logger.debug(f"time now: {now}")
+    logger.debug(f"alarm time: {now + sleep_period}")
+    # Create an alarm that will trigger sleep_period number of seconds from now.
+    time_alarm = alarm.time.TimeAlarm(monotonic_time=now + sleep_period)
+
+    # --- ESP32-S3 deep sleep ---
+    logger.debug("Entering deep sleep...")
+    alarm.exit_and_deep_sleep_until_alarms(time_alarm)
+
+
 def main():
     """
     XXX
@@ -138,13 +193,27 @@ def main():
     # Create a socket pool
     pool = socketpool.SocketPool(wifi.radio)  # pylint: disable=no-member
 
+    logger.debug("setting NTP up")
+    # The code is supposed to be running in specific time zone
+    # with NTP server running on the default router.
+    # Use minimum socket timeout (its type is int) to allow for tight loop.
+    ntp_server = secrets.get(NTP_SERVER)
+    if ntp_server is None:
+        ntp_server = str(wifi.radio.ipv4_gateway)
+    tz_offset = secrets.get(TZ_OFFSET)
+    if tz_offset is None:
+        tz_offset = 1
+    ntp = adafruit_ntp.NTP(
+        pool, server=ntp_server, tz_offset=tz_offset, socket_timeout=1
+    )
+
     metrics = Metrics(
         log_level,
         pool,
         secrets.get(BROKER_HOSTNAME),
         secrets.get(BROKER_PORT),
         secrets.get(METRIC_TIMEOUT),
-        0.1,
+        1,
         [
             (secrets.get(MQTT_TEMP_TOPIC), secrets.get(MQTT_TEMP_NAME)),
             (secrets.get(MQTT_CO2_TOPIC), secrets.get(MQTT_CO2_NAME)),
@@ -193,41 +262,49 @@ def main():
 
     co2_threshold_value = secrets.get(CO2_THRESHOLD)
 
+    start_hr = secrets.get(START_HR)
+    end_hr = secrets.get(END_HR)
+
     while True:
-        metric_dict = metrics.get_metrics()
+        cur_hr, _ = get_time(ntp)
+        if start_hr <= cur_hr <= end_hr:
+            metric_dict = metrics.get_metrics()
 
-        temperature = metric_dict.get(secrets.get(MQTT_TEMP_NAME))
-        if temperature != temp_value_last:
-            if temperature is None:
-                temp_area.text = "N/A"
-                temp_value_last = None
-            else:
-                temp_area.text = f"{round(temperature)}°C"
-                temp_value_last = temperature
-
-        co2 = metric_dict.get(secrets.get(MQTT_CO2_NAME))
-        if co2 != co2_value_last:
-            co_prefix = "CO₂"
-            if co2 is None:
-                co2_area.text = f"{co_prefix} : N/A"
-                co2_value_last = None
-            else:
-                co2_area.text = f"{co_prefix} : {co2} ppm"
-                co2_value_last = co2
-                if co2 > co2_threshold_value:
-                    co2_area.color = 0xFF0000
+            temperature = metric_dict.get(secrets.get(MQTT_TEMP_NAME))
+            if temperature != temp_value_last:
+                if temperature is None:
+                    temp_area.text = "N/A"
+                    temp_value_last = None
                 else:
-                    co2_area.color = co2_color_default
+                    temp_area.text = f"{round(temperature)}°C"
+                    temp_value_last = temperature
 
-        pressure = metric_dict.get(secrets.get(MQTT_PRESSURE_NAME))
-        if pressure != atm_value_last:
-            atm_prefix = "atm"
-            if pressure is None:
-                atm_area.text = f"{atm_prefix} : N/A"
-                atm_value_last = None
-            else:
-                atm_area.text = f"{atm_prefix} : {round(pressure)} hPa"
-                atm_value_last = pressure
+            co2 = metric_dict.get(secrets.get(MQTT_CO2_NAME))
+            if co2 != co2_value_last:
+                co_prefix = "CO₂"
+                if co2 is None:
+                    co2_area.text = f"{co_prefix} : N/A"
+                    co2_value_last = None
+                else:
+                    co2_area.text = f"{co_prefix} : {co2} ppm"
+                    co2_value_last = co2
+                    if co2 > co2_threshold_value:
+                        co2_area.color = 0xFF0000
+                    else:
+                        co2_area.color = co2_color_default
+
+            pressure = metric_dict.get(secrets.get(MQTT_PRESSURE_NAME))
+            if pressure != atm_value_last:
+                atm_prefix = "atm"
+                if pressure is None:
+                    atm_area.text = f"{atm_prefix} : N/A"
+                    atm_value_last = None
+                else:
+                    atm_area.text = f"{atm_prefix} : {round(pressure)} hPa"
+                    atm_value_last = pressure
+        else:
+            logger.info("outside of hours, setting the display off")
+            deep_sleep(graphics, 30)
 
 
 try:
