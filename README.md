@@ -2,6 +2,8 @@
 
 # qualidisplay
 
+replaces https://github.com/vladak/zerodisplay/
+
 ## Hardware
 
 - [Adafruit Qualia ESP32-S3 for TTL RGB-666 Displays](https://www.adafruit.com/product/5800)
