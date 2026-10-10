@@ -95,7 +95,7 @@ def get_font(file_name):
             code_points="ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz1234567890- ().,:!?/\\%+@~"
         )
         font.load_glyphs("°³µ₂")  # preload glyphs for fast printing
-    except Exception as exception: # pylint: disable=broad-exception-caught
+    except Exception as exception:  # pylint: disable=broad-exception-caught
         border_scale = 1
         font_scale = 2
         logger.warning(f"Cannot load bitmap font, will use terminal font: {exception}")
