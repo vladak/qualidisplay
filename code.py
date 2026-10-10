@@ -103,6 +103,17 @@ def get_font(file_name):
     return font, font_scale, border_scale
 
 
+def hard_reset(exception):
+    """
+    Sometimes soft reset is not enough. Perform hard reset.
+    """
+    print(f"Got exception: {exception}")
+    reset_time = 15
+    print(f"Performing hard reset in {reset_time} seconds")
+    time.sleep(reset_time)
+    microcontroller.reset()  # pylint: disable=no-member
+
+
 def main():
     """
     XXX
