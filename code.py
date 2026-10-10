@@ -169,6 +169,20 @@ def deep_sleep(graphics, sleep_period):
     alarm.exit_and_deep_sleep_until_alarms(time_alarm)
 
 
+def get_temp_color(value):
+    """
+    Return color according to temperature value.
+    """
+    if value > 28:
+        return 0xe60000
+    elif value > 12:
+        return 0xffcc00
+    elif value < 0:
+        return 0x33cccc
+    else:
+        return 0x33cc33
+
+
 def main():
     """
     XXX
@@ -278,6 +292,7 @@ def main():
                 else:
                     temp_area.text = f"{round(temperature)}°C"
                     temp_value_last = temperature
+                    temp_area.color = get_temp_color(temperature)
 
             co2 = metric_dict.get(secrets.get(MQTT_CO2_NAME))
             if co2 != co2_value_last:
