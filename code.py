@@ -1,20 +1,19 @@
+import time
+import traceback
+
+import adafruit_logging as logging
+import displayio
 import socketpool
 import supervisor
-import time
-import displayio
 import terminalio
-import traceback
+from adafruit_bitmap_font import bitmap_font
+from adafruit_display_text import label
+from adafruit_qualia.graphics import Displays, Graphics
 
 from logutil import get_log_level
 
 # from mqtt import mqtt_client_setup, mqtt_publish_robust
 from metrics import Metrics
-
-import adafruit_logging as logging
-from adafruit_bitmap_font import bitmap_font
-from adafruit_display_text import label
-
-from adafruit_qualia.graphics import Displays, Graphics
 
 try:
     import wifi

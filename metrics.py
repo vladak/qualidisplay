@@ -3,10 +3,10 @@ Metrics class abstracts acquiring metrics (to a degree)
 """
 
 import json
-import adafruit_logging as logging
 import ssl
 import time
 
+import adafruit_logging as logging
 import adafruit_minimqtt.adafruit_minimqtt as MQTT
 from adafruit_minimqtt.adafruit_minimqtt import MMQTTException
 
