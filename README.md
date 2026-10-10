@@ -54,5 +54,5 @@ The font however has to be converted to fit onto the flash and then it has to be
 
 ## Lessons learned
 
-- it is not possible to reduce the brightness of the RGB TTL display, in fact it is only possible to increase it by shorting the pins on the Qualia board
-
+- it is not possible to reduce the brightness of the RGB TTL display, in fact it is only possible to increase it (by shorting the pins on the Qualia board)
+- the stuttering/occasional jitter of the contents of the display was only visible when the console was connected
