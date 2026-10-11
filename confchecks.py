@@ -138,6 +138,8 @@ def check_tunables(secrets: dict) -> None:
 
     check_int(secrets, START_HR, min_val=0, max_val=24)
     check_int(secrets, END_HR, min_val=0, max_val=24)
+    if secrets.get(START_HR) >= secrets.get(END_HR):
+        bail(f"{START_HR} must be strictly less than {END_HR}")
 
     check_int(secrets, CO2_THRESHOLD, min_val=CO2_MIN_VALUE, max_val=CO2_MAX_VALUE)
 

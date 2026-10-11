@@ -294,7 +294,7 @@ def main():
                 atm_area.text = f"{atm_prefix} : {round(pressure)} hPa"
         else:
             logger.info("outside of hours, setting the display off")
-            deep_sleep(graphics, 30)
+            deep_sleep(graphics, (24 - end_hr + start_hr) * 3600)
 
 
 def get_co2_text_color(co2_value: int, co2_threshold_value: int) -> int:
