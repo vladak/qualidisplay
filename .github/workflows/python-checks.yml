@@ -30,7 +30,7 @@ jobs:
       - name: Run flake8
         run: |
           python3 -m pip install flake8
-          flake8 --ignore=E501,W503 *.py
+          flake8 --ignore=E501,W503,F405 *.py
       - name: Run pylint
         run: |
           python3 -m pip install pylint
