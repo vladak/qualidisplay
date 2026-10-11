@@ -123,8 +123,10 @@ def deep_sleep(graphics, sleep_period: int):
     buf = bytearray(1)
     i2c.writeto_then_readfrom(0x3F, bytes([0x03]), buf)
     i2c.writeto(
-        0x3F, bytes([0x03, buf[0] & ~(1 << board.BACKLIGHT)])
-    )  # pylint: disable=no-member
+        # pylint: disable=no-member
+        0x3F,
+        bytes([0x03, buf[0] & ~(1 << board.BACKLIGHT)]),
+    )
     i2c.writeto(0x3F, bytes([0x01, 0x00]))
     i2c.unlock()
 
@@ -205,8 +207,11 @@ def main():
 
     # By default, the display will auto refresh.
     graphics = Graphics(
-        Displays.BAR320X820, default_bg=None, rotation=270
-    )  # pylint: disable=no-member
+        # pylint: disable=no-member
+        Displays.BAR320X820,
+        default_bg=None,
+        rotation=270,
+    )
 
     logger.debug("setting display elements")
     grp = displayio.Group()
