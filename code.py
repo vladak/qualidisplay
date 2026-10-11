@@ -83,6 +83,7 @@ def get_font(file_name):
 def hard_reset(exception):
     """
     Sometimes soft reset is not enough. Perform hard reset.
+    :param exception: exception to report before resetting
     """
     print(f"Got exception: {exception}")
     reset_time = 15
