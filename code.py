@@ -5,6 +5,7 @@ Qualidisplay - display environment metrics using Adafruit Qualia
 import time
 import traceback
 
+# pylint: disable=import-error
 import adafruit_logging as logging
 import adafruit_ntp
 import alarm
@@ -110,7 +111,7 @@ def deep_sleep(graphics, sleep_period: int):
     # Step 1: Send ST7701S Sleep In command
     sleep_in = bytes([0x01, 0x10])
     dotclockframebuffer.ioexpander_send_init_sequence(
-        i2c, sleep_in, **dict(board.TFT_IO_EXPANDER)
+        i2c, sleep_in, **dict(board.TFT_IO_EXPANDER)  # pylint: disable=no-member
     )
 
     # Step 2: Release all display resources (stops dotclock signals)
@@ -121,7 +122,9 @@ def deep_sleep(graphics, sleep_period: int):
         pass
     buf = bytearray(1)
     i2c.writeto_then_readfrom(0x3F, bytes([0x03]), buf)
-    i2c.writeto(0x3F, bytes([0x03, buf[0] & ~(1 << board.BACKLIGHT)]))
+    i2c.writeto(
+        0x3F, bytes([0x03, buf[0] & ~(1 << board.BACKLIGHT)])
+    )  # pylint: disable=no-member
     i2c.writeto(0x3F, bytes([0x01, 0x00]))
     i2c.unlock()
 
@@ -201,7 +204,9 @@ def main():
     )
 
     # By default, the display will auto refresh.
-    graphics = Graphics(Displays.BAR320X820, default_bg=None, rotation=270)
+    graphics = Graphics(
+        Displays.BAR320X820, default_bg=None, rotation=270
+    )  # pylint: disable=no-member
 
     logger.debug("setting display elements")
     grp = displayio.Group()
