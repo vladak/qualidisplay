@@ -13,7 +13,8 @@ class Blinker:
     Encapsulates a method to change binary state of an object from within a tight loop.
 
     The class is not ready to be used in multiple instances for the same neopixel.
-    Assumes that set_blinking() will be called more frequently than the value of the duration parameter.
+    Assumes that set_blinking() will be called more frequently than the value
+    of the duration parameter.
 
     Not thread safe.
     """
@@ -22,7 +23,8 @@ class Blinker:
         """
         initialize the Blinker object
         :param subject: subject object
-        :param change_state: triplet of functions (first two for blinking state, the third for normal state)
+        :param change_state: triplet of functions (first two for blinking state,
+        the third for normal state)
         :param duration: duration of the blinking state in seconds
         """
         self._subject = subject
