@@ -17,6 +17,9 @@ class ConfCheckException(Exception):
 def check_string(secrets: dict, name: str, mandatory: bool = True) -> None:
     """
     Check is string with given name is present in secrets.
+    :param secrets: dictionary of tunables
+    :param name: name of tunable
+    :param mandatory: if True, raise ConfCheckException on missing
     """
     value = secrets.get(name)
     if value is None:
@@ -29,10 +32,19 @@ def check_string(secrets: dict, name: str, mandatory: bool = True) -> None:
 
 
 def check_int(
-    secrets: dict, name: str, mandatory: bool = True, min_val=None, max_val=None
+    secrets: dict,
+    name: str,
+    mandatory: bool = True,
+    min_val: int | None = None,
+    max_val: int | None = None,
 ) -> None:
     """
     Check is integer with given name is present in secrets.
+    :param secrets: dictionary of tunables
+    :param name: name of tunable
+    :param mandatory: if True, raise ConfCheckException on missing
+    :param min_val: minimum value
+    :param max_val: maximum value
     """
     value = secrets.get(name)
     if value is None:
@@ -53,6 +65,10 @@ def check_int(
 def check_list(secrets: dict, name: str, subtype, mandatory: bool = True) -> None:
     """
     Check whether list with given name is present in secrets.
+    :param secrets: dictionary of tunables
+    :param name: name of tunable
+    :param subtype: item type
+    :param mandatory: if True, raise ConfCheckException on missing
     """
     value = secrets.get(name)
     if value is None:
@@ -70,7 +86,11 @@ def check_list(secrets: dict, name: str, subtype, mandatory: bool = True) -> Non
 
 def check_bytes(secrets: dict, name: str, length: int, mandatory: bool = True) -> None:
     """
-    Check is bytes with given name is present in secrets.
+    Check that bytes with given name is present in secrets.
+    :param secrets: dictionary of tunables
+    :param name: name of tunable
+    :param length: length of the value
+    :param mandatory: if True, raise ConfCheckException on missing
     """
     value = secrets.get(name)
     if value is None:
@@ -90,6 +110,7 @@ def check_bytes(secrets: dict, name: str, length: int, mandatory: bool = True) -
 def bail(message: str) -> None:
     """
     Print message and exit with code 1.
+    :param message: message to print before exiting
     """
     print(message)
     sys.exit(1)
@@ -99,6 +120,7 @@ def check_tunables(secrets: dict) -> None:
     """
     Check that tunables are present and of correct type.
     Will throw ConfCheckException on error.
+    :param secrets: dictionary of tunables
     """
     check_string(secrets, LOG_LEVEL)
 
