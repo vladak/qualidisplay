@@ -21,6 +21,7 @@ from adafruit_qualia.graphics import Displays, Graphics
 from logutil import get_log_level
 
 # from mqtt import mqtt_client_setup, mqtt_publish_robust
+from blinker import Blinker
 from metrics import Metrics
 from timeutil import get_time
 
@@ -227,7 +228,7 @@ def main():
         secrets.get(BROKER_HOSTNAME),
         secrets.get(BROKER_PORT),
         secrets.get(METRIC_TIMEOUT),
-        1,
+        0.1,
         [
             (secrets.get(MQTT_TEMP_TOPIC), secrets.get(MQTT_TEMP_NAME)),
             (secrets.get(MQTT_CO2_TOPIC), secrets.get(MQTT_CO2_NAME)),
@@ -279,6 +280,20 @@ def main():
     start_hr = secrets.get(START_HR)
     end_hr = secrets.get(END_HR)
 
+    def co2_label_blink1(label):
+        label.background_color = 0xFFFFFF
+        label.color = 0xFF0000
+
+    def co2_label_blink2(label):
+        label.background_color = 0x000000
+        label.color = 0xFF0000
+
+    def co2_label_default(label):
+        label.background_color = 0x000000
+        label.color = co2_color_default
+
+    blinker = Blinker(co2_area, (co2_label_blink1, co2_label_blink2, co2_label_default))
+
     while True:
         cur_hr, _ = get_time(ntp)
         if start_hr <= cur_hr <= end_hr:
@@ -295,18 +310,17 @@ def main():
                     temp_area.color = get_temp_color(temperature)
 
             co2 = metric_dict.get(secrets.get(MQTT_CO2_NAME))
-            if co2 != co2_value_last:
-                co_prefix = "CO₂"
-                if co2 is None:
-                    co2_area.text = f"{co_prefix} : N/A"
-                    co2_value_last = None
+            co_prefix = "CO₂"
+            if co2 is None:
+                co2_area.text = f"{co_prefix} : N/A"
+                co2_value_last = None
+            else:
+                co2_area.text = f"{co_prefix} : {co2} ppm"
+                co2_value_last = co2
+                if co2 > co2_threshold_value:
+                    blinker.set_blinking(True)
                 else:
-                    co2_area.text = f"{co_prefix} : {co2} ppm"
-                    co2_value_last = co2
-                    if co2 > co2_threshold_value:
-                        co2_area.color = 0xFF0000
-                    else:
-                        co2_area.color = co2_color_default
+                    blinker.set_blinking(False)
 
             pressure = metric_dict.get(secrets.get(MQTT_PRESSURE_NAME))
             if pressure != atm_value_last:
