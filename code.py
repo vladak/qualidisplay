@@ -176,12 +176,12 @@ def get_temp_color(value):
     """
     if value > 28:
         return 0xE60000
-    elif value > 12:
+    if value > 12:
         return 0xFFCC00
-    elif value <= 0:
+    if value <= 0:
         return 0x33CCCC
-    else:
-        return 0x33CC33
+
+    return 0x33CC33
 
 
 def main():
