@@ -11,6 +11,7 @@ import alarm
 import board
 import displayio
 import dotclockframebuffer
+import microcontroller
 import rainbowio
 import socketpool
 import supervisor
