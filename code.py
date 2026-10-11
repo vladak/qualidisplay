@@ -24,7 +24,7 @@ from adafruit_simplemath import map_range
 
 from blinker import Blinker
 from confchecks import ConfCheckException, bail, check_tunables
-from const import CO2_MAX_VALUE, CO2_MIN_VALUE
+from const import CO2_MIN_VALUE
 from logutil import get_log_level
 from metrics import Metrics
 
