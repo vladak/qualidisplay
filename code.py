@@ -270,11 +270,6 @@ def main():
     # Add the Group to the Display
     graphics.display.root_group = graphics.root_group
 
-    # Store last metric values to avoid unnecessary redraws.
-    temp_value_last = -65535
-    co2_value_last = -1
-    atm_value_last = -1
-
     co2_threshold_value = secrets.get(CO2_THRESHOLD)
 
     start_hr = secrets.get(START_HR)
@@ -300,37 +295,29 @@ def main():
             metric_dict = metrics.get_metrics()
 
             temperature = metric_dict.get(secrets.get(MQTT_TEMP_NAME))
-            if temperature != temp_value_last:
-                if temperature is None:
-                    temp_area.text = "N/A"
-                    temp_value_last = None
-                else:
-                    temp_area.text = f"{round(temperature)}°C"
-                    temp_value_last = temperature
-                    temp_area.color = get_temp_color(temperature)
+            if temperature is None:
+                temp_area.text = "N/A"
+            else:
+                temp_area.text = f"{round(temperature)}°C"
+                temp_area.color = get_temp_color(temperature)
 
             co2 = metric_dict.get(secrets.get(MQTT_CO2_NAME))
             co_prefix = "CO₂"
             if co2 is None:
                 co2_area.text = f"{co_prefix} : N/A"
-                co2_value_last = None
             else:
                 co2_area.text = f"{co_prefix} : {co2} ppm"
-                co2_value_last = co2
                 if co2 > co2_threshold_value:
                     blinker.set_blinking(True)
                 else:
                     blinker.set_blinking(False)
 
             pressure = metric_dict.get(secrets.get(MQTT_PRESSURE_NAME))
-            if pressure != atm_value_last:
-                atm_prefix = "atm"
-                if pressure is None:
-                    atm_area.text = f"{atm_prefix} : N/A"
-                    atm_value_last = None
-                else:
-                    atm_area.text = f"{atm_prefix} : {round(pressure)} hPa"
-                    atm_value_last = pressure
+            atm_prefix = "atm"
+            if pressure is None:
+                atm_area.text = f"{atm_prefix} : N/A"
+            else:
+                atm_area.text = f"{atm_prefix} : {round(pressure)} hPa"
         else:
             logger.info("outside of hours, setting the display off")
             deep_sleep(graphics, 30)
