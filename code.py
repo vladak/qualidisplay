@@ -239,14 +239,14 @@ def main():
     start_hr = secrets.get(START_HR)
     end_hr = secrets.get(END_HR)
 
-    def co2_label_blink1(label):
-        label.background_color = 0xFFFFFF
+    def co2_label_blink1(label_obj):
+        label_obj.background_color = 0xFFFFFF
 
-    def co2_label_blink2(label):
-        label.background_color = 0x000000
+    def co2_label_blink2(label_obj):
+        label_obj.background_color = 0x000000
 
-    def co2_label_default(label):
-        label.background_color = 0x000000
+    def co2_label_default(label_obj):
+        label_obj.background_color = 0x000000
 
     blinker = Blinker(co2_area, (co2_label_blink1, co2_label_blink2, co2_label_default))
 
