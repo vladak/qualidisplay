@@ -16,6 +16,8 @@ import supervisor
 import terminalio
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
+from adafruit_logging import Logger
+from adafruit_ntp import NTP
 from adafruit_qualia.graphics import Displays, Graphics
 
 from logutil import get_log_level
@@ -184,6 +186,7 @@ def get_temp_color(value):
     return 0x33CC33
 
 
+# pylint: disable=too-many-locals,too-many-branches,too-many-statements
 def main():
     """
     XXX
@@ -208,19 +211,7 @@ def main():
     # Create a socket pool
     pool = socketpool.SocketPool(wifi.radio)  # pylint: disable=no-member
 
-    logger.debug("setting NTP up")
-    # The code is supposed to be running in specific time zone
-    # with NTP server running on the default router.
-    # Use minimum socket timeout (its type is int) to allow for tight loop.
-    ntp_server = secrets.get(NTP_SERVER)
-    if ntp_server is None:
-        ntp_server = str(wifi.radio.ipv4_gateway)
-    tz_offset = secrets.get(TZ_OFFSET)
-    if tz_offset is None:
-        tz_offset = 1
-    ntp = adafruit_ntp.NTP(
-        pool, server=ntp_server, tz_offset=tz_offset, socket_timeout=1
-    )
+    ntp = setup_nfs(pool)
 
     metrics = Metrics(
         log_level,
@@ -236,7 +227,7 @@ def main():
         ],
     )
 
-    # By default the display will auto refresh.
+    # By default, the display will auto refresh.
     graphics = Graphics(Displays.BAR320X820, default_bg=None, rotation=270)
 
     logger.debug("setting display elements")
@@ -321,6 +312,27 @@ def main():
         else:
             logger.info("outside of hours, setting the display off")
             deep_sleep(graphics, 30)
+
+
+def setup_nfs(pool) -> NTP:
+    """
+    setup NTP client and return the NTP object
+    """
+    logger = logging.getLogger(__name__)
+    logger.debug("setting NTP up")
+    # The code is supposed to be running in specific time zone
+    # with NTP server running on the default router.
+    # Use minimum socket timeout (its type is int) to allow for tight loop.
+    ntp_server = secrets.get(NTP_SERVER)
+    if ntp_server is None:
+        ntp_server = str(wifi.radio.ipv4_gateway)
+    tz_offset = secrets.get(TZ_OFFSET)
+    if tz_offset is None:
+        tz_offset = 1
+    ntp = adafruit_ntp.NTP(
+        pool, server=ntp_server, tz_offset=tz_offset, socket_timeout=1
+    )
+    return ntp
 
 
 try:
