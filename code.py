@@ -222,7 +222,8 @@ def main():
 
     text = "N/A"
     temp_font, _, _ = get_font(secrets.get(TEMP_FONT_FILE))
-    color = 0x0000FF
+    temp_color_default = 0xFF0000
+    color = temp_color_default
     temp_area = label.Label(temp_font, text=text, color=color)
     temp_area.x = 10
     temp_area.y = 90
@@ -268,6 +269,7 @@ def main():
             temperature = metric_dict.get(secrets.get(MQTT_TEMP_NAME))
             if temperature is None:
                 temp_area.text = "N/A"
+                temp_area.color = temp_color_default
             else:
                 temp_area.text = f"{round(temperature)}°C"
                 temp_area.color = get_temp_color(temperature)
