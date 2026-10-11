@@ -21,7 +21,6 @@ from adafruit_qualia.graphics import Displays, Graphics
 
 from logutil import get_log_level
 
-# from mqtt import mqtt_client_setup, mqtt_publish_robust
 from blinker import Blinker
 from metrics import Metrics
 from timeutil import get_time
