@@ -59,6 +59,7 @@ def get_font(file_name):
     Return font and font and border scale factor.
 
     :param file_name: file name of the font file
+    :return: font object, font scale, border scale
     """
 
     logger = logging.getLogger(__name__)
@@ -146,6 +147,7 @@ def get_temp_color(value: int):
     """
     Return color according to temperature value.
     :param value: temperature value in degrees of Celsius
+    :return: HTML color
     """
     if value > 28:
         return 0xE60000
