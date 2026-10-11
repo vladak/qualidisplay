@@ -267,7 +267,7 @@ def main():
                 co2_area.text = f"{co_prefix} : N/A"
             else:
                 co2_area.text = f"{co_prefix} : {co2_value} ppm"
-                co2_area.color = get_co2_text_color(co2_value)
+                co2_area.color = get_co2_text_color(co2_value, co2_threshold_value)
                 if co2_value > co2_threshold_value:
                     blinker.set_blinking(True)
                 else:
@@ -284,17 +284,18 @@ def main():
             deep_sleep(graphics, 30)
 
 
-def get_co2_text_color(co2_value: int) -> int:
+def get_co2_text_color(co2_value: int, co2_threshold_value: int) -> int:
     """
     Map CO2 value to HTML color to be used for displaying the value.
     :param co2_value: CO2 metric value
+    :param co2_threshold_value: CO2 threshold value
     :return: HTML color
     """
-    # restrict the value to the range [CO2_MIN_VALUE, CO2_MAX_VALUE]
+    # restrict the value to the range [CO2_MIN_VALUE, co2_threshold_value]
     co2_adjusted = max(CO2_MIN_VALUE, co2_value)
-    co2_adjusted = min(co2_adjusted, CO2_MAX_VALUE)
-    co2_reversed = CO2_MAX_VALUE - (co2_adjusted - CO2_MIN_VALUE)
-    color = map_range(co2_reversed, CO2_MIN_VALUE, CO2_MAX_VALUE, 0, 80)
+    co2_adjusted = min(co2_adjusted, co2_threshold_value)
+    co2_reversed = co2_threshold_value - (co2_adjusted - CO2_MIN_VALUE)
+    color = map_range(co2_reversed, CO2_MIN_VALUE, co2_threshold_value, 0, 80)
     #
     # colorwheel() takes values from 0 to 255 with 0 being red, 40 yellow and 80 green,
     # so the adjusted value has to be reversed for the desired effect of green mapped
