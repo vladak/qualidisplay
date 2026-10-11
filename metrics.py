@@ -54,7 +54,7 @@ class Metrics:
         topic_n_name,
     ):
         """
-        Connect to the MQTT broker and subcribe to the topics.
+        Connect to the MQTT broker and subscribe to the topics.
         """
 
         self.logger = logging.getLogger(__name__)

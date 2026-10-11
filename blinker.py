@@ -18,9 +18,12 @@ class Blinker:
     Not thread safe.
     """
 
-    def __init__(self, subject, change_state, duration=0.5):
+    def __init__(self, subject, change_state, duration: float | int = 0.5):
         """
         initialize the Blinker object
+        :param subject: subject object
+        :param change_state: triplet of functions (first two for blinking state, the third for normal state)
+        :param duration: duration of the blinking state in seconds
         """
         self._subject = subject
         self._change_state = change_state
@@ -33,7 +36,7 @@ class Blinker:
 
     def set_blinking(self, is_blinking: bool):
         """
-        XXX
+        :param is_blinking: whether the subject is in blinking state
         """
         logger = logging.getLogger(__name__)
 

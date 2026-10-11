@@ -94,6 +94,8 @@ def get_font(file_name):
     """
     Try to load a bitmap font. If not successful, fall back to terminal font.
     Return font and font and border scale factor.
+
+    :param file_name: file name of the font file
     """
 
     logger = logging.getLogger(__name__)
@@ -129,9 +131,11 @@ def hard_reset(exception):
     microcontroller.reset()  # pylint: disable=no-member
 
 
-def deep_sleep(graphics, sleep_period):
+def deep_sleep(graphics, sleep_period: int):
     """
     Enter deep sleep, powering the display off in the process.
+    :param graphics: Graphics object
+    :param sleep_period: period to sleep for in seconds
     """
     logger = logging.getLogger(__name__)
 
@@ -174,9 +178,10 @@ def deep_sleep(graphics, sleep_period):
     alarm.exit_and_deep_sleep_until_alarms(time_alarm)
 
 
-def get_temp_color(value):
+def get_temp_color(value: int):
     """
     Return color according to temperature value.
+    :param value: temperature value in degrees of Celsius
     """
     if value > 28:
         return 0xE60000
@@ -191,7 +196,7 @@ def get_temp_color(value):
 # pylint: disable=too-many-locals,too-many-branches,too-many-statements
 def main():
     """
-    XXX
+    Gather metrics from MQTT and display them.
     """
     log_level = get_log_level(secrets[LOG_LEVEL])
     logger = logging.getLogger(__name__)
