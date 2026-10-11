@@ -55,7 +55,7 @@ TEMP_PREFIX = "Temp: "
 HUM_PREFIX = "Hum: "
 
 
-def get_font(file_name):
+def get_font(file_name: str):
     """
     Try to load a bitmap font. If not successful, fall back to terminal font.
     Return font and font and border scale factor.
