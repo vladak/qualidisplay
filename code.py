@@ -259,24 +259,14 @@ def main():
                 temp_area.text = f"{round(temperature)}°C"
                 temp_area.color = get_temp_color(temperature)
 
-            co2 = metric_dict.get(secrets.get(MQTT_CO2_NAME))
+            co2_value = metric_dict.get(secrets.get(MQTT_CO2_NAME))
             co_prefix = "CO₂"
-            if co2 is None:
+            if co2_value is None:
                 co2_area.text = f"{co_prefix} : N/A"
             else:
-                co2_area.text = f"{co_prefix} : {co2} ppm"
-                # restrict the value to the range [CO2_MIN_VALUE, CO2_MAX_VALUE]
-                co2_adjusted = max(CO2_MIN_VALUE, co2)
-                co2_adjusted = min(co2_adjusted, CO2_MAX_VALUE)
-                co2_reversed = CO2_MAX_VALUE - (co2_adjusted - CO2_MIN_VALUE)
-                color = map_range(co2_reversed, CO2_MIN_VALUE, CO2_MAX_VALUE, 0, 80)
-                #
-                # colorwheel() takes values from 0 to 255 with 0 being red, 40 yellow and 80 green,
-                # so the adjusted value has to be reversed for the desired effect of green mapped
-                # to the low and red mapped to the high values.
-                #
-                co2_area.color = rainbowio.colorwheel(int(color))
-                if co2 > co2_threshold_value:
+                co2_area.text = f"{co_prefix} : {co2_value} ppm"
+                co2_area.color = get_co2_text_color(co2_value)
+                if co2_value > co2_threshold_value:
                     blinker.set_blinking(True)
                 else:
                     blinker.set_blinking(False)
@@ -290,6 +280,25 @@ def main():
         else:
             logger.info("outside of hours, setting the display off")
             deep_sleep(graphics, 30)
+
+
+def get_co2_text_color(co2_value: int) -> int:
+    """
+    Map CO2 value to HTML color to be used for displaying the value.
+    :param co2_value: CO2 metric value
+    :return: HTML color
+    """
+    # restrict the value to the range [CO2_MIN_VALUE, CO2_MAX_VALUE]
+    co2_adjusted = max(CO2_MIN_VALUE, co2_value)
+    co2_adjusted = min(co2_adjusted, CO2_MAX_VALUE)
+    co2_reversed = CO2_MAX_VALUE - (co2_adjusted - CO2_MIN_VALUE)
+    color = map_range(co2_reversed, CO2_MIN_VALUE, CO2_MAX_VALUE, 0, 80)
+    #
+    # colorwheel() takes values from 0 to 255 with 0 being red, 40 yellow and 80 green,
+    # so the adjusted value has to be reversed for the desired effect of green mapped
+    # to the low and red mapped to the high values.
+    #
+    return rainbowio.colorwheel(int(color))
 
 
 def setup_nfs(pool) -> NTP:
