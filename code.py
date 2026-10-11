@@ -221,7 +221,7 @@ def main():
     grp.append(splash)
 
     text = "N/A"
-    temp_font, font_scale, border_scale = get_font(secrets.get(TEMP_FONT_FILE))
+    temp_font, _, _ = get_font(secrets.get(TEMP_FONT_FILE))
     color = 0x0000FF
     temp_area = label.Label(temp_font, text=text, color=color)
     temp_area.x = 10
@@ -229,13 +229,13 @@ def main():
     splash.append(temp_area)
 
     co2_color_default = 0x00FF00
-    co2_font, font_scale, border_scale = get_font(secrets.get(CO2_FONT_FILE))
+    co2_font, _, _ = get_font(secrets.get(CO2_FONT_FILE))
     co2_area = label.Label(co2_font, text="", color=co2_color_default)
     co2_area.x = 10
     co2_area.y = 230
     splash.append(co2_area)
 
-    atm_font, font_scale, border_scale = get_font(secrets.get(CO2_FONT_FILE))
+    atm_font, _, _ = get_font(secrets.get(CO2_FONT_FILE))
     atm_area = label.Label(atm_font, text="", color=color)
     atm_area.x = 10
     atm_area.y = 290
