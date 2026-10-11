@@ -11,6 +11,7 @@ import alarm
 import board
 import displayio
 import dotclockframebuffer
+import rainbowio
 import socketpool
 import supervisor
 import terminalio
@@ -18,9 +19,11 @@ from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
 from adafruit_ntp import NTP
 from adafruit_qualia.graphics import Displays, Graphics
+from adafruit_simplemath import map_range
 
 from blinker import Blinker
 from confchecks import ConfCheckException, bail, check_tunables
+from const import CO2_MAX_VALUE, CO2_MIN_VALUE
 from logutil import get_log_level
 from metrics import Metrics
 
@@ -235,15 +238,12 @@ def main():
 
     def co2_label_blink1(label):
         label.background_color = 0xFFFFFF
-        label.color = 0xFF0000
 
     def co2_label_blink2(label):
         label.background_color = 0x000000
-        label.color = 0xFF0000
 
     def co2_label_default(label):
         label.background_color = 0x000000
-        label.color = co2_color_default
 
     blinker = Blinker(co2_area, (co2_label_blink1, co2_label_blink2, co2_label_default))
 
@@ -265,6 +265,17 @@ def main():
                 co2_area.text = f"{co_prefix} : N/A"
             else:
                 co2_area.text = f"{co_prefix} : {co2} ppm"
+                # restrict the value to the range [CO2_MIN_VALUE, CO2_MAX_VALUE]
+                co2_adjusted = max(CO2_MIN_VALUE, co2)
+                co2_adjusted = min(co2_adjusted, CO2_MAX_VALUE)
+                co2_reversed = CO2_MAX_VALUE - (co2_adjusted - CO2_MIN_VALUE)
+                color = map_range(co2_reversed, CO2_MIN_VALUE, CO2_MAX_VALUE, 0, 80)
+                #
+                # colorwheel() takes values from 0 to 255 with 0 being red, 40 yellow and 80 green,
+                # so the adjusted value has to be reversed for the desired effect of green mapped
+                # to the low and red mapped to the high values.
+                #
+                co2_area.color = rainbowio.colorwheel(int(color))
                 if co2 > co2_threshold_value:
                     blinker.set_blinking(True)
                 else:

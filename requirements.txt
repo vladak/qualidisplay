@@ -6,3 +6,4 @@ adafruit-circuitpython-ntp
 adafruit-circuitpython-debouncer
 adafruit-circuitpython-qualia
 adafruit-circuitpython-ntp
+adafruit-circuitpython-simplemath

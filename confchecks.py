@@ -4,6 +4,8 @@ Various functions for checking configuration.
 
 import sys
 
+from const import CO2_MAX_VALUE, CO2_MIN_VALUE
+
 # pylint: disable=unused-wildcard-import, wildcard-import
 from names import *
 
@@ -137,7 +139,7 @@ def check_tunables(secrets: dict) -> None:
     check_int(secrets, START_HR, min_val=0, max_val=24)
     check_int(secrets, END_HR, min_val=0, max_val=24)
 
-    check_int(secrets, CO2_THRESHOLD, min_val=300, max_val=3000)
+    check_int(secrets, CO2_THRESHOLD, min_val=CO2_MIN_VALUE, max_val=CO2_MAX_VALUE)
 
     check_string(secrets, TEMP_FONT_FILE)
     check_string(secrets, CO2_FONT_FILE)
