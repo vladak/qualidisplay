@@ -19,10 +19,13 @@ from adafruit_display_text import label
 from adafruit_ntp import NTP
 from adafruit_qualia.graphics import Displays, Graphics
 
-from logutil import get_log_level
-
 from blinker import Blinker
+from confchecks import ConfCheckException, bail, check_tunables
+from logutil import get_log_level
 from metrics import Metrics
+
+# pylint: disable=wildcard-import, unused-wildcard-import
+from names import *
 from timeutil import get_time
 
 try:
@@ -43,49 +46,8 @@ TEMPERATURE = "temp"
 HUMIDITY = "humidity"
 LAST_UPDATE = "time"
 
-BROKER_HOSTNAME = "broker"
-BROKER_PORT = "broker_port"
-
-SSID = "SSID"
-PASSWORD = "password"
-LOG_LEVEL = "log_level"
-
 TEMP_PREFIX = "Temp: "
 HUM_PREFIX = "Hum: "
-
-METRIC_TIMEOUT = "metric_timeout"
-MQTT_TEMP_TOPIC = "temp_sensor_topic"
-MQTT_TEMP_NAME = "temp_sensor_name"
-MQTT_CO2_TOPIC = "co2_sensor_topic"
-MQTT_CO2_NAME = "co2_sensor_name"
-MQTT_PRESSURE_TOPIC = "pressure_sensor_topic"
-MQTT_PRESSURE_NAME = "pressure_sensor_name"
-
-CO2_THRESHOLD = "co2_threshold"
-
-TEMP_FONT_FILE = "temp_font_file"
-CO2_FONT_FILE = "co2_font_file"
-
-NTP_SERVER = "ntp_server"
-TZ_OFFSET = "tz_offset"
-START_HR = "start_hr"
-END_HR = "end_hr"
-
-MANDATORY_SECRETS = [
-    BROKER_HOSTNAME,
-    BROKER_PORT,
-    PASSWORD,
-    SSID,
-    LOG_LEVEL,
-    MQTT_TEMP_TOPIC,
-    MQTT_CO2_TOPIC,
-    MQTT_PRESSURE_TOPIC,
-    CO2_THRESHOLD,
-    TEMP_FONT_FILE,
-    CO2_FONT_FILE,
-    START_HR,
-    END_HR,
-]
 
 
 def get_font(file_name):
@@ -196,16 +158,15 @@ def main():
     """
     Gather metrics from MQTT and display them.
     """
+    try:
+        check_tunables(secrets)
+    except ConfCheckException as exception:
+        bail(str(exception))
+
     log_level = get_log_level(secrets[LOG_LEVEL])
     logger = logging.getLogger(__name__)
     logger.setLevel(log_level)
     logger.info("Running")
-
-    # Check all mandatory secrets are present.
-    for secret in MANDATORY_SECRETS:
-        if secrets.get(secret) is None:
-            logger.error(f"secret {secret} is missing")
-            return
 
     # Connect to Wi-Fi
     logger.info("Connecting to wifi")
