@@ -16,7 +16,6 @@ import supervisor
 import terminalio
 from adafruit_bitmap_font import bitmap_font
 from adafruit_display_text import label
-from adafruit_logging import Logger
 from adafruit_ntp import NTP
 from adafruit_qualia.graphics import Displays, Graphics
 
