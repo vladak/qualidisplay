@@ -189,7 +189,7 @@ def main():
     # Create a socket pool
     pool = socketpool.SocketPool(wifi.radio)  # pylint: disable=no-member
 
-    ntp = setup_nfs(pool)
+    ntp = setup_ntp(pool)
 
     metrics = Metrics(
         log_level,
@@ -315,7 +315,7 @@ def get_co2_text_color(co2_value: int, co2_threshold_value: int) -> int:
     return rainbowio.colorwheel(int(color))
 
 
-def setup_nfs(pool) -> NTP:
+def setup_ntp(pool) -> NTP:
     """
     setup NTP client and return the NTP object
     """
