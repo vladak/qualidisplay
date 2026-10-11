@@ -112,10 +112,10 @@ def check_tunables(secrets: dict) -> None:
     check_string(secrets, MQTT_CO2_TOPIC)
     check_string(secrets, MQTT_PRESSURE_TOPIC)
 
-    check_int(secrets, START_HR)
-    check_int(secrets, END_HR)
+    check_int(secrets, START_HR, min_val=0, max_val=24)
+    check_int(secrets, END_HR, min_val=0, max_val=24)
 
-    check_int(secrets, CO2_THRESHOLD)
+    check_int(secrets, CO2_THRESHOLD, min_val=300, max_val=3000)
 
     check_string(secrets, TEMP_FONT_FILE)
     check_string(secrets, CO2_FONT_FILE)
