@@ -222,7 +222,7 @@ def main():
 
     text = "N/A"
     temp_font, _, _ = get_font(secrets.get(TEMP_FONT_FILE))
-    temp_color_default = 0xFF0000
+    temp_color_default = 0xFFFFFF
     color = temp_color_default
     temp_area = label.Label(temp_font, text=text, color=color)
     temp_area.x = 10
@@ -238,6 +238,7 @@ def main():
 
     atm_font, _, _ = get_font(secrets.get(CO2_FONT_FILE))
     atm_area = label.Label(atm_font, text="", color=color)
+    atm_area.color = 0x0000FF
     atm_area.x = 10
     atm_area.y = 290
     splash.append(atm_area)
