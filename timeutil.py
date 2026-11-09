@@ -59,8 +59,9 @@ def get_time(ntp):
     #
     # NTP returns time in UTC. Add DST offset, if any.
     #
-    # TODO: what if tm_hour == 23 and DST offset is 1 ?
     current_hour = current_time.tm_hour + dst_offset_eu(current_time)
+    if current_hour > 23:
+        current_hour = 0
     current_minute = current_time.tm_min
     logger.debug(f"time: {current_hour:2}:{current_minute:02}")
 
