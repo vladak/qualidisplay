@@ -57,7 +57,8 @@ def get_time(ntp):
             continue
 
     #
-    # NTP returns time in UTC. Add DST offset, if any.
+    # NTP returns time with the time offset it was setup with.
+    # Add DST offset, if any.
     #
     current_hour = current_time.tm_hour + dst_offset_eu(current_time)
     if current_hour > 23:
