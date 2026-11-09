@@ -13,7 +13,7 @@ def dst_offset_eu(time_struct) -> int:
     Since 1996, valid through 2099.
     Code adapted from
     https://forum.arduino.cc/t/daylight-saving-time-adjust-with-ethernet-ntp/192602
-    :return: time offset in hours
+    :return: time offset in hours (either 0 or 1)
     """
     hour = time_struct.tm_hour
     day = time_struct.tm_mday
@@ -40,7 +40,7 @@ def dst_offset_eu(time_struct) -> int:
 
 def get_time(ntp):
     """
-    return current time from NTP as tuple hour, minute
+    return current time (with DST computed in) from NTP as tuple (hour, minute)
     """
     logger = logging.getLogger(__name__)
 
@@ -56,7 +56,10 @@ def get_time(ntp):
                 raise os_error
             continue
 
-    # what if tm_hour == 23 ?
+    #
+    # NTP returns time in UTC. Add DST offset, if any.
+    #
+    # TODO: what if tm_hour == 23 and DST offset is 1 ?
     current_hour = current_time.tm_hour + dst_offset_eu(current_time)
     current_minute = current_time.tm_min
     logger.debug(f"time: {current_hour:2}:{current_minute:02}")
@@ -77,6 +80,7 @@ def get_time_to_sleep(cur_hr, cur_min, start_hr, end_hr):
 
     # XXX end_hr = 0
 
+    # TODO: what if the DST transition happens on the next day ?
     if cur_hr < start_hr:
         hrs = start_hr - cur_hr
     else:
