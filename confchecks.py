@@ -136,6 +136,7 @@ def check_tunables(secrets: dict) -> None:
     check_string(secrets, MQTT_CO2_TOPIC)
     check_string(secrets, MQTT_PRESSURE_TOPIC)
 
+    check_int(secrets, TZ_OFFSET, min_val=0, max_val=24)
     check_int(secrets, START_HR, min_val=0, max_val=24)
     check_int(secrets, END_HR, min_val=0, max_val=24)
     if secrets.get(START_HR) >= secrets.get(END_HR):

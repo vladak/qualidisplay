@@ -332,8 +332,6 @@ def setup_ntp(pool) -> NTP:
     if ntp_server is None:
         ntp_server = str(wifi.radio.ipv4_gateway)
     tz_offset = secrets.get(TZ_OFFSET)
-    if tz_offset is None:
-        tz_offset = 1
     ntp = adafruit_ntp.NTP(
         pool, server=ntp_server, tz_offset=tz_offset, socket_timeout=1
     )
