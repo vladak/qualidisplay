@@ -31,7 +31,7 @@ from metrics import Metrics
 
 # pylint: disable=wildcard-import, unused-wildcard-import
 from names import *
-from timeutil import get_time
+from timeutil import get_time, get_time_to_sleep
 
 try:
     import wifi
@@ -263,8 +263,8 @@ def main():
     blinker = Blinker(co2_area, (co2_label_blink1, co2_label_blink2, co2_label_default))
 
     while True:
-        cur_hr, _ = get_time(ntp)
-        if start_hr <= cur_hr <= end_hr:
+        cur_hr, cur_min = get_time(ntp)
+        if start_hr <= cur_hr < end_hr:
             metric_dict = metrics.get_metrics()
 
             temperature = metric_dict.get(secrets.get(MQTT_TEMP_NAME))
@@ -294,8 +294,9 @@ def main():
             else:
                 atm_area.text = f"{atm_prefix} : {round(pressure)} hPa"
         else:
+            sleep_seconds = get_time_to_sleep(cur_hr, cur_min, start_hr, end_hr)
             logger.info("outside of hours, setting the display off")
-            deep_sleep(graphics, (24 - end_hr + start_hr) * 3600)
+            deep_sleep(graphics, sleep_seconds)
 
 
 def get_co2_text_color(co2_value: int, co2_threshold_value: int) -> int:

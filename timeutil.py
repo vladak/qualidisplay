@@ -56,8 +56,36 @@ def get_time(ntp):
                 raise os_error
             continue
 
+    # what if tm_hour == 23 ?
     current_hour = current_time.tm_hour + dst_offset_eu(current_time)
     current_minute = current_time.tm_min
     logger.debug(f"time: {current_hour:2}:{current_minute:02}")
 
     return current_hour, current_minute
+
+
+def get_time_to_sleep(cur_hr, cur_min, start_hr, end_hr):
+    """
+    compute time to sleep based on current time
+    :return: time in seconds
+    """
+    logger = logging.getLogger(__name__)
+    # XXX debug
+    logger.setLevel(logging.DEBUG)
+
+    logger.debug(f"{cur_hr}:{cur_min} {start_hr},{end_hr}")
+
+    # XXX end_hr = 0
+
+    if cur_hr < start_hr:
+        hrs = start_hr - cur_hr
+    else:
+        hrs = end_hr - cur_hr
+
+    mins = 0
+    if cur_min > 0:
+        mins = 60 - cur_min
+        hrs -= 1
+
+    logger.debug(f"time to sleep = {hrs}:{mins}")
+    return hrs * 3600 + mins * 60

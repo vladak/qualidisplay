@@ -35,8 +35,14 @@ secrets = {
     "co2_threshold": 1200,
     "temp_font_file": "fonts/InterDisplay-Bold-208-reduced_glyphs.pcf",
     "co2_font_file": "fonts/InterDisplay-SemiBold-52-reduced_glyphs.pcf",
+    "start_hr": 7,
+    "end_hr": 22,
 }
 ```
+
+The `start_hr` and `end_hr` form half-closed interval `[start_hr, end_hr)` for
+which the display is on, e.g. if `start_hr = 7` and `end_hr = 22` then the
+display will be on from 7:00 to 22:00.
 
 ### Generating bitmap fonts
 
