@@ -11,6 +11,8 @@ from timeutil import get_time_to_sleep
         (6, 30, 7, 22, 1800),
         (0, 0, 7, 22, 25200),
         (0, 10, 7, 22, 24600),
+        (23, 10, 0, 2, 3000),
+        (16, 30, 0, 2, 27000),
     ],
 )
 def test_get_time_sleep(cur_hr, cur_min, start_hr, end_hr, exp_val):

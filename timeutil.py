@@ -80,9 +80,12 @@ def get_time_to_sleep(cur_hr, cur_min, start_hr, end_hr):
 
     logger.debug(f"{cur_hr:2}:{cur_min:02} start_hr = {start_hr} end_hr = {end_hr}")
 
-    # TODO: what if start_hr == 0 ?
-    assert cur_hr < start_hr or cur_hr >= end_hr
     assert start_hr < end_hr
+
+    if start_hr == 0:
+        start_hr = 24
+
+    assert cur_hr < start_hr or cur_hr >= end_hr
 
     # TODO: what if the DST transition happens on the next day ?
     if cur_hr < start_hr:
