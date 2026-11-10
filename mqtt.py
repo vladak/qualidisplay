@@ -7,7 +7,10 @@ import ssl
 import adafruit_logging as logging
 import adafruit_minimqtt.adafruit_minimqtt as MQTT
 
+#
 # Avoid infinite recursion by using non-default logger in the MQTT callbacks.
+# This is necessary if a log formatter is using MQTT to deliver log messages.
+#
 MQTT_LOGGER_NAME = "mqtt"
 
 
