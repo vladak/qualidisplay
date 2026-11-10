@@ -40,9 +40,9 @@ secrets = {
 }
 ```
 
-The `start_hr` and `end_hr` form half-closed interval `[start_hr, end_hr)` for
-which the display is on, e.g. if `start_hr = 7` and `end_hr = 22` then the
-display will be on from 7:00 to 22:00.
+The `start_hr` and `end_hr` form half-closed interval `[start_hr, end_hr)` for which the display is on, 
+e.g. if `start_hr = 7` and `end_hr = 22` then the display will be on from 7:00 to 22:00.
+The `start_hr`/`end_hr` can range from 0 to 23. Value of 0 means midnight.
 
 ### Generating bitmap fonts
 
