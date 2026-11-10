@@ -78,19 +78,22 @@ def get_time_to_sleep(cur_hr, cur_min, start_hr, end_hr):
     # XXX debug
     logger.setLevel(logging.DEBUG)
 
-    logger.debug(f"{cur_hr}:{cur_min} {start_hr},{end_hr}")
+    logger.debug(f"{cur_hr:2}:{cur_min:02} start_hr = {start_hr} end_hr = {end_hr}")
 
-    # XXX end_hr = 0
+    # TODO: what if start_hr == 0 ?
+    assert cur_hr < start_hr or cur_hr >= end_hr
+    assert start_hr < end_hr
 
     # TODO: what if the DST transition happens on the next day ?
     if cur_hr < start_hr:
         hrs = start_hr - cur_hr
     else:
-        hrs = end_hr - cur_hr
+        hrs = 24 - cur_hr + start_hr
 
     mins = 0
     if cur_min > 0:
         mins = 60 - cur_min
+        # TODO: check if hrs >=1 ?
         hrs -= 1
 
     logger.debug(f"time to sleep = {hrs}:{mins}")
