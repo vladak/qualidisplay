@@ -93,7 +93,7 @@ def get_time_to_sleep(cur_hr, cur_min, start_hr, end_hr):
     mins = 0
     if cur_min > 0:
         mins = 60 - cur_min
-        # TODO: check if hrs >=1 ?
+        assert hrs >= 1
         hrs -= 1
 
     logger.debug(f"time to sleep = {hrs}:{mins}")
