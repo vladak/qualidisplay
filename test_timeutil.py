@@ -12,7 +12,7 @@ from timeutil import get_time_to_sleep
         (0, 0, 7, 22, 25200),
         (0, 10, 7, 22, 24600),
         (23, 10, 0, 2, 3000),
-        (16, 30, 0, 2, 27000),
+        (20, 30, 23, 0, 9000),
     ],
 )
 def test_get_time_sleep(cur_hr, cur_min, start_hr, end_hr, exp_val):
@@ -23,7 +23,7 @@ def test_get_time_sleep(cur_hr, cur_min, start_hr, end_hr, exp_val):
 
 
 @pytest.mark.parametrize(
-    "cur_hr,start_hr,end_hr", [(7, 7, 22), (13, 7, 14), (8, 10, 7)]
+    "cur_hr,start_hr,end_hr", [(7, 7, 22), (13, 7, 14)]
 )
 def test_get_time_sleep_neg(cur_hr, start_hr, end_hr):
     """

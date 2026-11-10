@@ -72,6 +72,7 @@ def get_time(ntp):
 def get_time_to_sleep(cur_hr, cur_min, start_hr, end_hr):
     """
     compute time to sleep based on current time
+    start_hr/end_hr value of 0 means midnight
     :return: time in seconds
     """
     logger = logging.getLogger(__name__)
@@ -79,8 +80,6 @@ def get_time_to_sleep(cur_hr, cur_min, start_hr, end_hr):
     logger.setLevel(logging.DEBUG)
 
     logger.debug(f"{cur_hr:2}:{cur_min:02} start_hr = {start_hr} end_hr = {end_hr}")
-
-    assert start_hr < end_hr
 
     if start_hr == 0:
         start_hr = 24
