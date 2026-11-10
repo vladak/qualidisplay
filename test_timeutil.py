@@ -1,3 +1,7 @@
+"""
+timeutil module tests
+"""
+
 import pytest
 
 from timeutil import get_time_to_sleep
