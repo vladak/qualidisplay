@@ -26,9 +26,7 @@ def test_get_time_sleep(cur_hr, cur_min, start_hr, end_hr, exp_val):
     assert get_time_to_sleep(cur_hr, cur_min, start_hr, end_hr) == exp_val
 
 
-@pytest.mark.parametrize(
-    "cur_hr,start_hr,end_hr", [(7, 7, 22), (13, 7, 14)]
-)
+@pytest.mark.parametrize("cur_hr,start_hr,end_hr", [(7, 7, 22), (13, 7, 14)])
 def test_get_time_sleep_neg(cur_hr, start_hr, end_hr):
     """
     Ensure time to sleep computation refuses invalid inputs.
