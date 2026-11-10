@@ -76,7 +76,6 @@ def get_time_to_sleep(cur_hr, cur_min, start_hr, end_hr):
     :return: time in seconds
     """
     logger = logging.getLogger(__name__)
-    # XXX debug
     logger.setLevel(logging.DEBUG)
 
     logger.debug(f"{cur_hr:2}:{cur_min:02} start_hr = {start_hr} end_hr = {end_hr}")
@@ -86,7 +85,6 @@ def get_time_to_sleep(cur_hr, cur_min, start_hr, end_hr):
 
     assert cur_hr < start_hr or cur_hr >= end_hr
 
-    # TODO: what if the DST transition happens on the next day ?
     if cur_hr < start_hr:
         hrs = start_hr - cur_hr
     else:
